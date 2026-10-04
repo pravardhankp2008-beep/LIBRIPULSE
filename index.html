@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="LibriPulse — Automated Smart Campus Library System with Dynamic Inventory Management & Circulation Timers. VCET Puttur Byte Race 2026." />
+  <meta name="author" content="Team LibriPulse — VCET Puttur CSE" />
+  <meta name="theme-color" content="#0f0e17" />
+
+  <title>LibriPulse | Smart Campus Library System</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ================================================================== -->
+  <!--  HEADER                                                            -->
+  <!-- ================================================================== -->
+  <header id="app-header">
+    <div class="header-top-bar">
+      <div class="header-badge" id="dept-badge">VCET PUTTUR &bull; CSE DEPARTMENT</div>
+      <!-- Session Badge (Top Right) -->
+      <div id="session-badge-container" class="session-badge-container hidden">
+        <span id="session-identity-pill" class="session-identity-pill"></span>
+        <button id="btn-session-logout" class="btn btn-sm btn-logout" type="button">Logout</button>
+      </div>
+    </div>
+
+    <h1 class="header-title" id="app-title">
+      <span class="title-accent">LIBRI</span>PULSE
+    </h1>
+    <p class="header-subtitle" id="app-subtitle">
+      Smart Campus Library System &amp; Mutual Verification Architecture
+    </p>
+    <div class="header-glow" aria-hidden="true"></div>
+  </header>
+
+  <!-- ================================================================== -->
+  <!--  LOGIN GATE (UNAUTHENTICATED SCREEN)                               -->
+  <!-- ================================================================== -->
+  <div id="login-gate-section" class="login-gate-section">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="auth-badge">BYTE RACE 2026 &bull; AUTHENTICATION TERMINAL</div>
+        <h2 class="auth-title">System Entrance Gate</h2>
+        <p class="auth-subtitle">Select your clearance portal to access LibriPulse</p>
+      </div>
+
+      <!-- Auth Role Toggle Tabs -->
+      <div class="auth-tab-bar">
+        <button id="tab-auth-student" class="auth-tab-btn active" type="button" data-role="student">
+          🎓 Student Portal
+        </button>
+        <button id="tab-auth-librarian" class="auth-tab-btn" type="button" data-role="librarian">
+          🛡️ Librarian Gate
+        </button>
+      </div>
+
+      <!-- Tab A: Student Login Form -->
+      <form id="auth-form-student" class="auth-form" onsubmit="return false;">
+        <div class="input-field-group">
+          <label for="student-usn-input" class="input-label">COLLEGE USN</label>
+          <input
+            type="text"
+            id="student-usn-input"
+            class="brutalist-input"
+            placeholder="e.g. 4VP26CS089"
+            value="4VP26CS089"
+            autocomplete="username"
+            required
+          />
+        </div>
+
+        <div class="input-field-group">
+          <label for="student-pin-input" class="input-label">STUDENT PIN / PASSWORD</label>
+          <div class="password-input-wrapper">
+            <input
+              type="password"
+              id="student-pin-input"
+              class="brutalist-input"
+              placeholder="Enter 4-digit PIN..."
+              value="1234"
+              autocomplete="current-password"
+              required
+            />
+            <button type="button" class="btn-toggle-password" data-target="student-pin-input" aria-label="Toggle password visibility">
+              <span class="eye-icon">👁️</span>
+              <span class="toggle-label">Show</span>
+            </button>
+          </div>
+        </div>
+
+        <button id="btn-quick-fill-demo" class="btn btn-secondary btn-full btn-demo-fill" type="button">
+          ⚡ Quick Fill Demo Account (4VP26CS089 / 1234)
+        </button>
+
+        <button id="btn-guest-mode-student" class="btn btn-secondary btn-full" type="button" style="margin-top: 6px;">
+          🚀 Instant Guest Access (No Credentials Needed)
+        </button>
+
+        <button id="btn-student-login" class="btn btn-primary btn-full btn-glow" type="submit" style="margin-top: 6px;">
+          Enter Student Terminal &rarr;
+        </button>
+
+        <div id="student-auth-error" class="auth-error-box hidden" role="alert"></div>
+      </form>
+
+      <!-- Tab B: Librarian Login Form -->
+      <form id="auth-form-librarian" class="auth-form hidden" onsubmit="return false;">
+        <div class="staff-clearance-badge">STAFF CLEARANCE REQUIRED</div>
+
+        <div class="input-field-group">
+          <label for="librarian-id-input" class="input-label">STAFF ID / EMAIL</label>
+          <input
+            type="email"
+            id="librarian-id-input"
+            class="brutalist-input"
+            placeholder="e.g. librarian@vcet.edu.in"
+            value="librarian@vcet.edu.in"
+            autocomplete="username"
+            required
+          />
+        </div>
+
+        <div class="input-field-group">
+          <label for="librarian-passkey-input" class="input-label">MASTER PASSKEY</label>
+          <div class="password-input-wrapper">
+            <input
+              type="password"
+              id="librarian-passkey-input"
+              class="brutalist-input"
+              placeholder="Enter Master Passkey..."
+              autocomplete="current-password"
+              required
+            />
+            <button type="button" class="btn-toggle-password" data-target="librarian-passkey-input" aria-label="Toggle password visibility">
+              <span class="eye-icon">👁️</span>
+              <span class="toggle-label">Show</span>
+            </button>
+          </div>
+        </div>
+
+        <button id="btn-guest-mode-librarian" class="btn btn-secondary btn-full" type="button" style="margin-bottom: 6px;">
+          🚀 Instant Librarian Guest Mode
+        </button>
+
+        <button id="btn-librarian-login" class="btn btn-primary btn-full" type="submit">
+          Authorize Desk Session &rarr;
+        </button>
+
+        <div id="librarian-auth-error" class="auth-error-box hidden" role="alert"></div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!--  AUTHENTICATED APP CONTAINER                                       -->
+  <!-- ================================================================== -->
+  <div id="authenticated-app-container" class="authenticated-app-container hidden">
+
+    <!-- NAVIGATION TABS -->
+    <nav id="tab-bar" aria-label="Main navigation">
+      <button class="tab-btn active" data-tab="catalog" id="tab-catalog" aria-selected="true" role="tab">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>1. Book Catalog</span>
+      </button>
+      <button class="tab-btn" data-tab="holds" id="tab-holds" aria-selected="false" role="tab">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 12h10M7 17h10"/></svg>
+        <span>2. QR Holds &amp; Timers</span>
+      </button>
+      <button class="tab-btn" data-tab="community" id="tab-community" aria-selected="false" role="tab">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 1 0 7.75"/></svg>
+        <span>3. Events &amp; Club</span>
+      </button>
+      <button class="tab-btn" data-tab="librarian" id="tab-librarian" aria-selected="false" role="tab">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <span id="tab-librarian-label">Librarian Desk Terminal</span>
+      </button>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
+
+      <!-- TAB 1 : CATALOG -->
+      <section id="section-catalog" class="tab-section active" aria-labelledby="tab-catalog">
+
+        <!-- Student Metric Cards -->
+        <div class="metrics-row" id="student-metrics">
+          <div class="metric-card" id="metric-loyalty">
+            <div class="metric-ring" id="loyalty-ring">
+              <svg viewBox="0 0 120 120">
+                <circle class="ring-bg" cx="60" cy="60" r="52" />
+                <circle class="ring-fill" cx="60" cy="60" r="52" id="loyalty-ring-fill" />
+              </svg>
+              <span class="ring-value" id="loyalty-value">--</span>
+            </div>
+            <div class="metric-label">Loyalty Score</div>
+          </div>
+
+          <div class="metric-card" id="metric-borrows">
+            <div class="metric-big-number" id="borrows-value">-</div>
+            <div class="metric-label">Active Borrows</div>
+          </div>
+
+          <div class="metric-card" id="metric-quota">
+            <div class="metric-fraction">
+              <span class="frac-num" id="quota-used">-</span>
+              <span class="frac-sep">/</span>
+              <span class="frac-den" id="quota-max">-</span>
+            </div>
+            <div class="metric-label">Book Quota</div>
+          </div>
+        </div>
+
+        <!-- Book Cards Grid -->
+        
+          <h2 class="section-heading" id="catalog-heading">
+            <span class="heading-dot"></span>Library Catalog
+          </h2>
+          
+          <div class="catalog-controls">
+            <input type="text" id="catalog-search" class="brutalist-input search-input" placeholder="Search by title, author, or category...">
+            <div class="filter-pills" id="catalog-filters">
+              <button class="pill active" data-category="All">All</button>
+              <button class="pill" data-category="Programming">Programming</button>
+              <button class="pill" data-category="Networking">Networking</button>
+              <button class="pill" data-category="Self-Help">Self-Help</button>
+              <button class="pill" data-category="Data Structures">Data Structures</button>
+              <button class="pill" data-category="Finance">Finance</button>
+            </div>
+          </div>
+        <div id="catalog-container" class="book-grid"></div>
+
+      </section>
+
+      <!-- TAB 2 : QR HOLDS & TIMERS -->
+      <section id="section-holds" class="tab-section" aria-labelledby="tab-holds">
+
+        <h2 class="section-heading">
+          <span class="heading-dot"></span>QR Holds &amp; Active Circulation Timers
+        </h2>
+
+        <!-- Scanner Controls -->
+        <div class="scanner-panel" id="scanner-panel">
+
+          <!-- Dummy Camera Scan Button -->
+          <div class="scanner-camera-row">
+            <button id="btn-dummy-camera" class="btn btn-primary btn-glow btn-camera" type="button">
+              📷 Open Camera &amp; Scan
+            </button>
+            <span id="camera-scan-status-text" class="camera-status-label">Tap to simulate barcode scan</span>
+          </div>
+
+          <!-- Camera Viewfinder Animation Modal (hidden by default) -->
+          <div id="camera-viewfinder-modal" class="camera-viewfinder-overlay hidden" role="dialog" aria-modal="true">
+            <div class="camera-viewfinder-box">
+              <div class="viewfinder-frame">
+                <div class="viewfinder-laser"></div>
+              </div>
+              <p class="viewfinder-label">Scanning barcode…</p>
+            </div>
+          </div>
+
+          <!-- Manual Barcode Input -->
+          <div class="scanner-manual-row">
+            <div class="input-field-group" style="flex:1; min-width:200px;">
+              <label for="manual-barcode-input" class="input-label">ENTER BOOK SERIAL NUMBER / BARCODE</label>
+              <input
+                type="text"
+                id="manual-barcode-input"
+                class="brutalist-input"
+                placeholder="e.g., BK-101"
+              />
+            </div>
+            <button id="btn-lookup-hold" class="btn btn-primary" type="button">
+              🔍 Lookup / Hold Book
+            </button>
+          </div>
+
+          <!-- Lookup Result Card (hidden by default) -->
+          <div id="barcode-lookup-result" class="lookup-result-card hidden"></div>
+
+          <!-- Existing Dropdown + QR Generate (kept for backward compat) -->
+          <div class="scanner-controls" style="margin-top:var(--sp-4);">
+            <label for="hold-book-select" class="select-label">Select Book ID
+              <select id="hold-book-select" class="styled-select">
+                <option value="" disabled selected>-- Choose a book --</option>
+              </select>
+            </label>
+
+            <button id="btn-scan-qr" class="btn btn-primary btn-glow" type="button">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v3h-3M14 20h3M20 20h0"/></svg>
+              Scan &amp; Generate QR
+            </button>
+          </div>
+
+          <!-- Scan Status Alert -->
+          <div id="scan-status" class="alert-box alert-hidden" role="status" aria-live="polite">
+            <span id="scan-status-icon" class="alert-icon"></span>
+            <span id="scan-status-text">Ready to scan...</span>
+          </div>
+        </div>
+
+        <!-- Active Borrows / Waitlist Table -->
+        <div class="table-wrapper" id="holds-table-wrapper">
+          <table id="holds-table" class="data-table">
+            <thead>
+              <tr>
+                <th>Book ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Current Holder</th>
+                <th>Due Timer</th>
+                <th>Waitlist Queue</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="holds-table-body"></tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- TAB 3 : COMMUNITY & EVENTS -->
+      <section id="section-community" class="tab-section" aria-labelledby="tab-community">
+
+        <h2 class="section-heading">
+          <span class="heading-dot"></span>Campus Reading Clubs &amp; Literary Events
+        </h2>
+
+        <div id="events-container" class="events-grid"></div>
+
+      </section>
+
+      <!-- TAB 4 : LIBRARIAN DESK TERMINAL -->
+      <section id="section-librarian" class="tab-section" aria-labelledby="tab-librarian">
+
+        <div id="admin-dashboard" class="admin-dashboard">
+
+          <div class="admin-top-panel">
+            <h2 class="section-heading">
+              <span class="heading-dot"></span>Librarian Terminal &amp; Control Desk
+            </h2>
+            
+              <div class="admin-quick-stats">
+                <div class="admin-stat-pill">
+                  <span>Clearance:</span> <strong>MASTER AUTHORIZED</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="metrics-row admin-metrics-row" id="librarian-metrics">
+              <div class="metric-card">
+                <div class="metric-big-number" id="lib-stat-books">-</div>
+                <div class="metric-label">Total Books</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-big-number" id="lib-stat-issued">-</div>
+                <div class="metric-label">Issued Books</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-big-number" id="lib-stat-students">-</div>
+                <div class="metric-label">Registered Students</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-big-number" id="lib-stat-waitlists">-</div>
+                <div class="metric-label">Active Waitlists</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1. CIRCULATION POLICY SETTINGS CARD -->
+          <div class="admin-card-section">
+            <h3 class="admin-subheading"><span class="heading-dot"></span>Circulation Policy Settings</h3>
+            <div class="policy-settings-panel">
+              <form id="form-policy-settings" class="policy-form" onsubmit="return false;">
+                <div class="policy-inputs-grid">
+                  <div class="input-field-group">
+                    <label for="setting-loan-days" class="input-label">DEFAULT LOAN (DAYS)</label>
+                    <input type="number" id="setting-loan-days" class="brutalist-input" min="0" max="30" value="7" />
+                  </div>
+                  <div class="input-field-group">
+                    <label for="setting-loan-hours" class="input-label">ADDITIONAL LOAN (HOURS)</label>
+                    <input type="number" id="setting-loan-hours" class="brutalist-input" min="0" max="23" value="0" placeholder="e.g. 1 hour for quick test" />
+                  </div>
+                  <div class="input-field-group">
+                    <label for="setting-grace-hours" class="input-label">HOLD GRACE PERIOD (HOURS)</label>
+                    <input type="number" id="setting-grace-hours" class="brutalist-input" min="1" max="72" value="24" />
+                  </div>
+                </div>
+                <button id="btn-save-settings" class="btn btn-primary" type="submit">
+                  💾 Update Circulation Policy
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- 2. CATALOG INVENTORY MANAGEMENT -->
+          <div class="admin-card-section inventory-management-section">
+            <div class="inventory-mgmt-header">
+              <h3 class="admin-subheading"><span class="heading-dot"></span>📦 Catalog Inventory Management</h3>
+              <span class="inventory-mgmt-badge">LIVE INVENTORY</span>
+            </div>
+            <p class="inventory-mgmt-desc">Add new books to the campus library system. All entries persist to local storage and update the public catalog instantly.</p>
+            <div class="add-book-panel">
+              <form id="form-add-book" class="add-book-form" onsubmit="return false;">
+                <div class="add-book-inputs-grid">
+                  <div class="input-field-group">
+                    <label for="add-book-id" class="input-label">BOOK ID / SERIAL NO</label>
+                    <input type="text" id="add-book-id" class="brutalist-input" placeholder="e.g. BK-106" required />
+                  </div>
+                  <div class="input-field-group">
+                    <label for="add-book-title" class="input-label">TITLE</label>
+                    <input type="text" id="add-book-title" class="brutalist-input" placeholder="e.g. Operating System Concepts" required />
+                  </div>
+                  <div class="input-field-group">
+                    <label for="add-book-author" class="input-label">AUTHOR</label>
+                    <input type="text" id="add-book-author" class="brutalist-input" placeholder="e.g. Abraham Silberschatz" required />
+                  </div>
+                  <div class="input-field-group">
+                    <label for="add-book-type" class="input-label">CATEGORY</label>
+                    <select id="add-book-type" class="styled-select">
+                      <option value="Academic">Academic</option>
+                      <option value="Non-Academic">Non-Academic</option>
+                    </select>
+                  </div>
+                  <div class="input-field-group">
+                    <label for="add-book-subject" class="input-label">SUBJECT / DOMAIN</label>
+                    <input type="text" id="add-book-subject" class="brutalist-input" placeholder="e.g. Computer Science" />
+                  </div>
+                  <div class="input-field-group">
+                    <label for="add-book-shelf" class="input-label">SHELF RACK LOCATION</label>
+                    <input type="text" id="add-book-shelf" class="brutalist-input" placeholder="e.g. Rack A3 — Shelf 2" />
+                  </div>
+                </div>
+                <button id="btn-add-book" class="btn btn-primary btn-glow" type="submit">
+                  + Add Book to System
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- 3. INVENTORY & ISSUE CONTROLS TABLE -->
+          <div class="admin-card-section">
+            <h3 class="admin-subheading"><span class="heading-dot"></span>Live Book Inventory &amp; Issue Controls</h3>
+            <div class="table-wrapper" id="admin-table-wrapper">
+              <table id="admin-table" class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Shelf Rack</th>
+                    <th>Status</th>
+                    <th>Holder / Due Timer</th>
+                    <th>Waitlist Queue</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 4. REGISTERED STUDENTS DIRECTORY (SERIAL NO / CARD ID LIST) -->
+          <div class="admin-card-section">
+            <h3 class="admin-subheading"><span class="heading-dot"></span>Registered Students Directory &amp; Audit Review</h3>
+            <div class="table-wrapper" id="students-table-wrapper">
+              <table id="students-directory-table" class="data-table">
+                <thead>
+                  <tr>
+                    <th>Card Serial ID</th>
+                    <th>College USN</th>
+                    <th>Student Name</th>
+                    <th>Branch / Sem</th>
+                    <th>Loyalty Score</th>
+                    <th>Quota Unlocked</th>
+                    <th>Active Borrows</th>
+                    <th>Profile Review</th>
+                  </tr>
+                </thead>
+                <tbody id="students-directory-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 5. SYSTEM MAINTENANCE -->
+          <div class="admin-maintenance-row">
+            <div class="db-reset-card">
+              <h4>Database Maintenance &amp; Reset</h4>
+              <p>Restore default mock database seed state for hackathon evaluation testing.</p>
+              <button id="btn-reset-db" class="btn btn-danger" type="button">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                Reset Mock Database
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ================================================================== -->
+  <!--  MODAL 1: STUDENT PROFILE & AUDIT REVIEW                           -->
+  <!-- ================================================================== -->
+  <div id="modal-student-profile" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="profile-modal-title" class="modal-title">Student Profile Review</h3>
+        <button id="btn-profile-modal-close" class="modal-close" type="button" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body profile-modal-body">
+        
+        <!-- Header Info Card -->
+        <div class="profile-summary-header">
+          <div class="profile-card-badge" id="profile-serial-no">LIB-001</div>
+          <div class="profile-main-info">
+            <h2 id="profile-name">Pravardhan K P</h2>
+            <p id="profile-usn-branch">USN: 4VP26CS089 | Computer Science &amp; Engineering (Sem 5)</p>
+          </div>
+        </div>
+
+        <!-- Score & Quota Overview -->
+        <div class="profile-stats-grid">
+          <div class="profile-stat-box">
+            <span class="stat-box-label">LOYALTY SCORE</span>
+            <span class="stat-box-val" id="profile-score-val">92/100</span>
+            <div class="score-adjust-group">
+              <button class="btn btn-sm btn-secondary" onclick="handleAdjustScore(-5)">-5 Penalty</button>
+              <button class="btn btn-sm btn-primary" onclick="handleAdjustScore(+10)">+10 Reward</button>
+            </div>
+          </div>
+
+          <div class="profile-stat-box">
+            <span class="stat-box-label">UNLOCKED BOOK QUOTA</span>
+            <span class="stat-box-val" id="profile-quota-val">4 Books</span>
+            <small class="stat-box-sub">Auto-calculated from score</small>
+          </div>
+        </div>
+
+        <!-- Active Borrows Section -->
+        <div class="profile-section-block">
+          <h4 class="profile-block-title">Current Active Borrows &amp; Timers</h4>
+          <div id="profile-active-borrows-container"></div>
+        </div>
+
+        <!-- Complete Borrowing Audit Log -->
+        <div class="profile-section-block">
+          <h4 class="profile-block-title">Borrowing History &amp; Punctuality Audit Log</h4>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Book ID</th>
+                  <th>Title</th>
+                  <th>Borrowed At</th>
+                  <th>Returned At</th>
+                  <th>Punctuality Status</th>
+                </tr>
+              </thead>
+              <tbody id="profile-history-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button id="btn-profile-modal-dismiss" class="btn btn-secondary" type="button">Close Inspection</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!--  MODAL 2: EDIT / REPLACE BOOK ENTRY                                -->
+  <!-- ================================================================== -->
+  <div id="modal-edit-book" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit / Replace Book Catalog Entry</h3>
+        <button id="btn-edit-modal-close" class="modal-close" type="button" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="form-edit-book" onsubmit="return false;">
+        <div class="modal-body">
+          <input type="hidden" id="edit-book-id-hidden" />
+          <div class="input-field-group">
+            <label for="edit-book-title" class="input-label">BOOK TITLE</label>
+            <input type="text" id="edit-book-title" class="brutalist-input" required />
+          </div>
+          <div class="input-field-group">
+            <label for="edit-book-author" class="input-label">AUTHOR</label>
+            <input type="text" id="edit-book-author" class="brutalist-input" required />
+          </div>
+          <div class="input-field-group">
+            <label for="edit-book-type" class="input-label">CATEGORY</label>
+            <select id="edit-book-type" class="styled-select">
+              <option value="Academic">Academic</option>
+              <option value="Non-Academic">Non-Academic</option>
+            </select>
+          </div>
+          <div class="input-field-group">
+            <label for="edit-book-subject" class="input-label">SUBJECT / DOMAIN</label>
+            <input type="text" id="edit-book-subject" class="brutalist-input" />
+          </div>
+          <div class="input-field-group">
+            <label for="edit-book-shelf" class="input-label">SHELF RACK LOCATION</label>
+            <input type="text" id="edit-book-shelf" class="brutalist-input" placeholder="e.g. Rack A3 — Shelf 2" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-save-edit-book" class="btn btn-primary" type="submit">Save Changes</button>
+          <button id="btn-edit-modal-dismiss" class="btn btn-secondary" type="button">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!--  MODAL 3: QR CODE VERIFICATION                                     -->
+  <!-- ================================================================== -->
+  <div id="qr-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="qr-modal-title" class="modal-title">Hold Verification QR</h3>
+        <button id="btn-modal-close" class="modal-close" type="button" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-info" id="qr-modal-info">Present this QR code at the librarian desk.</p>
+        <div id="qr-code-target" class="qr-target"></div>
+        <p class="qr-data-label" id="qr-data-label"></p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-modal-dismiss" class="btn btn-secondary" type="button">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!--  FOOTER                                                            -->
+  <!-- ================================================================== -->
+  
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+  
+  <footer id="app-footer">
+    <p>Built with purpose for <strong>VCET Puttur Byte Race 2026</strong></p>
+    <p class="footer-sub">LibriPulse &mdash; Automated Smart Campus Library System</p>
+  </footer>
+
+  <!-- API Compatibility Shim (replaces removed js/ modules) -->
+  <script>
+  (function () {
+    'use strict';
+
+    /* ── window.appStore (session wrapper) ───── */
+    var SK = 'libripulse_active_session';
+    window.appStore = {
+      init:         function () { return Promise.resolve(); },
+      getState:     function () {
+        try {
+          var raw = sessionStorage.getItem(SK) || localStorage.getItem(SK);
+          return { currentUserSession: JSON.parse(raw) };
+        } catch (e) {
+          return { currentUserSession: null };
+        }
+      },
+      setSession:   function (s) {
+        try {
+          sessionStorage.setItem(SK, JSON.stringify(s));
+          localStorage.setItem(SK, JSON.stringify(s));
+        } catch (e) {}
+      },
+      clearSession: function ()  {
+        try {
+          sessionStorage.removeItem(SK);
+          localStorage.removeItem(SK);
+        } catch (e) {}
+      }
+    };
+
+    /* ── window.guestMode ─────────────────────────────────── */
+    window.guestMode = {
+      initGuestControls: function (onLogin) {
+        var btnStudent   = document.getElementById('btn-guest-mode-student');
+        var btnLibrarian = document.getElementById('btn-guest-mode-librarian');
+
+        if (btnStudent) {
+          btnStudent.addEventListener('click', function () {
+            var guest = { role: 'student', usn: '4VP26CS089', name: 'Pravardhan K P', id: '4VP26CS089', loyalty_score: 92, max_quota: 4 };
+            window.appStore.setSession(guest);
+            if (onLogin) onLogin('student');
+          });
+        }
+        if (btnLibrarian) {
+          btnLibrarian.addEventListener('click', function () {
+            var guest = { role: 'librarian', id: 'STAFF', name: 'Librarian Terminal' };
+            window.appStore.setSession(guest);
+            if (onLogin) onLogin('librarian');
+          });
+        }
+      }
+    };
+  })();
+  </script>
+
+  <!-- App Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
